@@ -8,6 +8,7 @@ const API_ENDPOINT = "https://swapi.dev/api";
 
 import { play } from "./music.js";
 import { converter } from "./roman.js";
+import { restartAnimation } from "./restart-animation.js"; // Exe 3
 
 let musicaFilme = {
   audioUrl: "./audio/tema-sw.mp3",
@@ -26,11 +27,9 @@ filmes.innerHTML = "";
 
 const resposta = await fetch(API_ENDPOINT);
 const listaUrl = await resposta.json();
-console.log(listaUrl);
 
 let respostaFilmes = await fetch(listaUrl.films);
 let listaFilmes = await respostaFilmes.json();
-console.log(listaFilmes);
 
 // ordena lista de filmes - Exe 4
 listaFilmes.results.sort(funcaoComparadora);
@@ -42,13 +41,23 @@ listaFilmes.results.forEach((element) => {
   insereFilme(element);
 });
 
-console.log(listaFilmes.results);
-
 // Diretrizes em: https://fegemo.github.io/cefet-front-end/classes/js4/#16
 function insereFilme(obj) {
   let elementoFilme = document.createElement("li");
   let texto = `Episode ${obj.episode_id} - ${obj.title}`;
   elementoFilme.innerHTML = texto;
+
+  // Exe 3 ------
+  let intro = document.querySelector("pre.introducao");
+  elementoFilme.addEventListener("click", function (e) {
+    let textoOpening = `Episode ${
+      obj.episode_id
+    }\n${obj.title.toUpperCase()}\n\n${obj.opening_crawl}\n`;
+    intro.innerHTML = textoOpening;
+    restartAnimation(intro);
+  });
+  // End exe3 ------
+
   filmes.appendChild(elementoFilme);
 }
 
